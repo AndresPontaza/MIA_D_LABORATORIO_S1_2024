@@ -1,5 +1,8 @@
 package main
 
+// Comandos de prueba
+// mkdisk -size=5 -unit=M -path=/home/andres-pontaza/Escritorio/MIA/P1/C.dsk
+
 /*--------------------------Import--------------------------*/
 
 import (
