@@ -3,19 +3,19 @@ package main
 /*--------------------------Import--------------------------*/
 
 import (
-	"bufio"
-	"bytes"
-	"encoding/gob"
-	"errors"
-	"fmt"
-	"io"
-	"math/rand"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strconv"
-	"strings"
-	"time"
+	"bufio"         // Lectura de datos
+	"bytes"         // Manipulacion de bytes
+	"encoding/gob"  // Codificacion y decodificacion de datos
+	"errors"        // Manejo de errores
+	"fmt"           // Impresion de datos
+	"io"            // Entrada y salida de datos
+	"math/rand"     // Numeros aleatorios
+	"os"            // Sistema operativo
+	"os/exec"       // Ejecucion de comandos
+	"path/filepath" // Rutas de archivos
+	"strconv"       // Conversion de datos
+	"strings"       // Manipulacion de cadenas
+	"time"          // Fecha y hora
 )
 
 /*--------------------------/Import--------------------------*/
@@ -27,92 +27,6 @@ type mbr = struct {
 	Mbr_tamano         [100]byte
 	Mbr_fecha_creacion [100]byte
 	Mbr_dsk_signature  [100]byte
-	Dsk_fit            [100]byte
-	// hasta cuatro particiones primarias
-	Mbr_partition_1 partition
-	Mbr_partition_2 partition
-	Mbr_partition_3 partition
-	Mbr_partition_4 partition
-}
-
-// Partition
-type partition = struct {
-	Part_mount       [100]byte
-	Part_type        [100]byte
-	Part_fit         [100]byte
-	Part_start       [100]byte
-	Part_s           [100]byte
-	Part_name        [100]byte
-	Part_correlative [100]byte
-	Part_id          [100]byte
-}
-
-// Extended Boot Record (EBR)
-type ebr = struct {
-	Part_mount [100]byte
-	Part_fit   [100]byte
-	Part_start [100]byte
-	Part_s     [100]byte
-	Part_next  [100]byte
-	Part_name  [100]byte
-}
-
-// Super Bloque
-type super_bloque = struct {
-	S_filesystem_type   [100]byte
-	S_inodes_count      [100]byte
-	S_blocks_count      [100]byte
-	S_free_blocks_count [100]byte
-	S_free_inodes_count [100]byte
-	S_mtime             [100]byte
-	S_umtime            [100]byte
-	S_mnt_count         [100]byte
-	S_magic             [100]byte
-	S_inode_s           [100]byte
-	S_block_s           [100]byte
-	S_firts_ino         [100]byte
-	S_first_blo         [100]byte
-	S_bm_inode_start    [100]byte
-	S_bm_block_start    [100]byte
-	S_inode_start       [100]byte
-	S_block_start       [100]byte
-}
-
-// Tablas de Inodos
-type inodo = struct {
-	I_uid   [100]byte
-	I_gid   [100]byte
-	I_size  [100]byte
-	I_atime [100]byte
-	I_ctime [100]byte
-	I_mtime [100]byte
-	I_block [100]byte
-	I_type  [100]byte
-	I_perm  [100]byte
-}
-
-// Bloques de Carpetas
-type bloque_carpeta = struct {
-	B_content_1 cotent
-	B_content_2 cotent
-	B_content_3 cotent
-	B_content_4 cotent
-}
-
-// Content
-type cotent = struct {
-	B_name  [100]byte
-	B_inodo [100]byte
-}
-
-// Bloques de Archivos
-type bloque_archivo = struct {
-	B_content [100]byte
-}
-
-// Bloques de Apuntadores
-type bloque_apuntador = struct {
-	B_content [100]byte
 }
 
 /*--------------------------/Structs--------------------------*/
@@ -132,7 +46,7 @@ func msg_error(err error) {
 // Obtiene y lee el comando
 func analizar() {
 	finalizar := false
-	fmt.Println("Analizador en GO")
+	fmt.Println("Ejemplo 3: MKDISK 1.0 y REP 1.0")
 	reader := bufio.NewReader(os.Stdin)
 
 	//  Pide constantemente un comando
@@ -196,15 +110,17 @@ func ejecutar_comando(commandArray []string) {
 		mkdisk(commandArray)
 	} else if data == "rep" {
 		/* REP */
-		mostrar_mkdisk()
-	} else if data == "pause" {
-		/* PAUSE */
-		pause()
+		rep()
+	} else if data == "execute" {
+		/* EXECUTE */
+		execute()
 	} else {
 		/* ERROR */
 		fmt.Println("[ERROR] El comando no fue reconocido...")
 	}
 }
+
+/*--------------------------/Metodos o Funciones--------------------------*/
 
 /*--------------------------Comandos--------------------------*/
 
@@ -362,15 +278,6 @@ func mkdisk(commandArray []string) {
 				// Copio valor al Struct
 				copy(master_boot_record.Mbr_dsk_signature[:], strconv.Itoa(int(num_random)))
 
-				// Verifico si existe el parametro "Fit" (Opcional)
-				if band_fit {
-					// Copio valor al Struct
-					copy(master_boot_record.Dsk_fit[:], val_fit)
-				} else {
-					// Si no especifica -> "Primer Ajuste"
-					copy(master_boot_record.Dsk_fit[:], "f")
-				}
-
 				// Verifico si existe el parametro "Unit" (Opcional)
 				if band_unit {
 					// Megabytes
@@ -387,36 +294,6 @@ func mkdisk(commandArray []string) {
 					copy(master_boot_record.Mbr_tamano[:], strconv.Itoa(int(val_size*1024*1024)))
 					total_size = val_size * 1024
 				}
-
-				// Inicializar Parcticiones
-				// Falta part_correlative y part_id
-				copy(master_boot_record.Mbr_partition_1.Part_mount[:], "0")
-				copy(master_boot_record.Mbr_partition_1.Part_type[:], "0")
-				copy(master_boot_record.Mbr_partition_1.Part_fit[:], "0")
-				copy(master_boot_record.Mbr_partition_1.Part_start[:], "-1")
-				copy(master_boot_record.Mbr_partition_1.Part_s[:], "0")
-				copy(master_boot_record.Mbr_partition_1.Part_name[:], "")
-
-				copy(master_boot_record.Mbr_partition_2.Part_mount[:], "0")
-				copy(master_boot_record.Mbr_partition_2.Part_type[:], "0")
-				copy(master_boot_record.Mbr_partition_2.Part_fit[:], "0")
-				copy(master_boot_record.Mbr_partition_2.Part_start[:], "-1")
-				copy(master_boot_record.Mbr_partition_2.Part_s[:], "0")
-				copy(master_boot_record.Mbr_partition_2.Part_name[:], "")
-
-				copy(master_boot_record.Mbr_partition_3.Part_mount[:], "0")
-				copy(master_boot_record.Mbr_partition_3.Part_type[:], "0")
-				copy(master_boot_record.Mbr_partition_3.Part_fit[:], "0")
-				copy(master_boot_record.Mbr_partition_3.Part_start[:], "-1")
-				copy(master_boot_record.Mbr_partition_3.Part_s[:], "0")
-				copy(master_boot_record.Mbr_partition_3.Part_name[:], "")
-
-				copy(master_boot_record.Mbr_partition_4.Part_mount[:], "0")
-				copy(master_boot_record.Mbr_partition_4.Part_type[:], "0")
-				copy(master_boot_record.Mbr_partition_4.Part_fit[:], "0")
-				copy(master_boot_record.Mbr_partition_4.Part_start[:], "-1")
-				copy(master_boot_record.Mbr_partition_4.Part_s[:], "0")
-				copy(master_boot_record.Mbr_partition_4.Part_name[:], "")
 
 				// Convierto de entero a string
 				str_total_size := strconv.Itoa(total_size)
@@ -468,10 +345,67 @@ func mkdisk(commandArray []string) {
 	fmt.Println("[MENSAJE] El comando MKDISK aqui finaliza")
 }
 
-/* PAUSE */
-func pause() {
-	fmt.Print("[MENSAJE] Presiona enter para continuar...")
+/* EXECUTE */
+func execute() {
+	fmt.Print("Aquí deberias agregar execute...")
 	fmt.Scanln()
+}
+
+// Muestra los datos en el disco
+func rep() {
+	fin_archivo := false
+	var empty [100]byte
+	mbr_empty := mbr{}
+	cont := 0
+
+	fmt.Println("Reporte de MKDISK:")
+
+	// Apertura de archivo
+	disco, err := os.OpenFile("/home/andres-pontaza/Escritorio/MIA/P1/C.dsk", os.O_RDWR, 0660)
+
+	// ERROR
+	if err != nil {
+		msg_error(err)
+	}
+
+	// Calculo del tamano de struct en bytes
+	mbr2 := struct_a_bytes(mbr_empty)
+	sstruct := len(mbr2)
+
+	// RECORRE CADA STRUCT DEL ARCHIVO
+	for !fin_archivo {
+		// Lectrura de conjunto de bytes en archivo binario
+		lectura := make([]byte, sstruct)
+		_, err = disco.ReadAt(lectura, int64(sstruct*cont))
+
+		// ERROR
+		if err != nil && err != io.EOF {
+			msg_error(err)
+		}
+
+		// Conversion de bytes a struct
+		mbr := bytes_a_struct_mbr(lectura)
+		sstruct = len(lectura)
+
+		// ERROR
+		if err != nil {
+			msg_error(err)
+		}
+
+		if mbr.Mbr_tamano == empty {
+			fin_archivo = true
+		} else {
+			fmt.Print("Tamaño: ")
+			fmt.Println(string(mbr.Mbr_tamano[:]))
+			fmt.Print("Fecha: ")
+			fmt.Println(string(mbr.Mbr_fecha_creacion[:]))
+			fmt.Print("Signature: ")
+			fmt.Println(string(mbr.Mbr_dsk_signature[:]))
+		}
+
+		cont++
+	}
+	disco.Close()
 }
 
 /*--------------------------/Comandos--------------------------*/
@@ -539,68 +473,6 @@ func bytes_a_struct_mbr(s []byte) mbr {
 	}
 
 	return p
-}
-
-// Muestra los datos en el disco
-func mostrar_mkdisk() {
-	fin_archivo := false
-	var empty [100]byte
-	mbr_empty := mbr{}
-	cont := 0
-
-	fmt.Println("Reporte de MKDISK:")
-
-	// Apertura de archivo
-	disco, err := os.OpenFile("/home/andres-pontaza/Escritorio/MIA/P1/A.dsk", os.O_RDWR, 0660)
-
-	// ERROR
-	if err != nil {
-		msg_error(err)
-	}
-
-	// Calculo del tamano de struct en bytes
-	mbr2 := struct_a_bytes(mbr_empty)
-	sstruct := len(mbr2)
-
-	// RECORRE CADA STRUCT DEL ARCHIVO
-	for !fin_archivo {
-		// Lectrura de conjunto de bytes en archivo binario
-		lectura := make([]byte, sstruct)
-		_, err = disco.ReadAt(lectura, int64(sstruct*cont))
-
-		// ERROR
-		if err != nil && err != io.EOF {
-			msg_error(err)
-		}
-
-		// Conversion de bytes a struct
-		mbr := bytes_a_struct_mbr(lectura)
-		sstruct = len(lectura)
-
-		// ERROR
-		if err != nil {
-			msg_error(err)
-		}
-
-		if mbr.Mbr_tamano == empty {
-			fin_archivo = true
-		} else {
-			fmt.Print("Tamaño: ")
-			fmt.Println(string(mbr.Mbr_tamano[:]))
-			fmt.Print("Fecha: ")
-			fmt.Println(string(mbr.Mbr_fecha_creacion[:]))
-			fmt.Print("Signature: ")
-			fmt.Println(string(mbr.Mbr_dsk_signature[:]))
-			fmt.Print("Fit: ")
-			fmt.Println(string(mbr.Dsk_fit[:]))
-			fmt.Println("Particion 1")
-			fmt.Print("Type: ")
-			fmt.Println(string(mbr.Mbr_partition_1.Part_type[:]))
-		}
-
-		cont++
-	}
-	disco.Close()
 }
 
 /*--------------------------/Metodos o Funciones--------------------------*/
