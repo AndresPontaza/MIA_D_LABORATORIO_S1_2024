@@ -1,0 +1,15 @@
+digraph G{
+
+  tbl [
+    shape=box
+    label=<
+     <table border='0' cellborder='2' width='600' height='150' color='dodgerblue1'>
+     <tr>
+     <td height='150' width='110'> MBR </td>
+     <td height='200' width='50'>Primaria <br/> 10 por ciento del Disco </td>
+     <td height='200' width='50'>Primaria <br/> 10 por ciento del Disco </td>
+     </tr> 
+     </table>        
+>];
+
+}
