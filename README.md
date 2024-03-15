@@ -2,4 +2,4 @@
 Repositorio de ejemplos del Laboratorio 
 
 ## Autor ✒️
-**Andres Eduardo Pontaza Muralles** 
+Andres Eduardo Pontaza Muralles 
