@@ -1,6 +1,6 @@
 package main
 
-import "SISTEMIA2/Analizador"
+import "ejemplo8/Analizador"
 
 func main() {
 	Analizador.Analizar()

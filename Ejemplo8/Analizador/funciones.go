@@ -1,9 +1,9 @@
 package Analizador
 
 import (
-	"SISTEMIA2/Mount"
 	"bufio"
 	"bytes"
+	"ejemplo8/Mount"
 	"encoding/gob"
 	"errors"
 	"fmt"
