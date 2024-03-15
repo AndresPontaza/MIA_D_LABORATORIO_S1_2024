@@ -1,4 +1,4 @@
-# Laboratorio MIA Sección "D" Primer Semestre 📚
+# Laboratorio MIA "D" 📚
 Repositorio de ejmplos del Laboratorio 
 
 ## Autor ✒️
