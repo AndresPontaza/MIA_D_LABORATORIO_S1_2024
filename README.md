@@ -1,2 +1,5 @@
-# MIA_D_LABORATORIO_S1_2024
- Repositorio del Laboratorio de MIA "D"
+# Laboratorio MIA Sección "D" Primer Semestre 📚
+Repositorio de ejmplos del Laboratorio 
+
+## Autor ✒️
+* **Andres Eduardo Pontaza Muralles** 
