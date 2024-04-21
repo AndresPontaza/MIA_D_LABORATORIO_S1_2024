@@ -1,0 +1,25 @@
+<div style="padding-top: 3%">
+    <div class="bg-dark p-4 rounded m-5">
+        <div style="padding-left: 2%;padding-right: 2%">
+            <h4 style="color: white; margin-bottom: 1.5%; margin-top: 0.5%;">Archivo de Entrada:</h4>
+            <textarea class="form-control" id="entradatxtarea" rows="12" [(ngModel)]="entrada"
+                name="entrada"></textarea>
+        </div>
+
+        <div style="padding-top: 1.5%; padding-left: 2%">
+            <input #fileUpload [hidden]="true" type="file" class="file-input" (change)="onFileSelected($event)">
+            <button class="btn btn-outline-success" (click)="fileUpload.click()" style="margin-right: 25px;">Cargar
+                Archivo</button>
+            <button class="btn btn-outline-primary" (click)="ejecutar()" style="margin-right: 25px;">Ejecutar</button>
+            <a class="btn btn-outline-warning" href="/reportes" role="button">Reportes</a>
+        </div>
+    </div>
+
+    <div class="bg-dark p-4 rounded m-5">
+        <div style="padding-left: 2%;padding-right: 2%; padding-bottom: 1%;">
+            <h4 style="color: white; margin-bottom: 1%;">Salida de Comandos:</h4>
+            <textarea style="color: green; background: black;" readonly class="form-control" id="salidatxtarea" rows="7"
+                [(ngModel)]="salida" name="salida"></textarea>
+        </div>
+    </div>
+</div>

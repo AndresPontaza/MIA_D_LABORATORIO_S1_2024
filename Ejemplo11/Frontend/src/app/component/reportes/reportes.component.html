@@ -1,0 +1,21 @@
+<div style="padding-top: 3%">
+    <div class="bg-dark p-4 rounded m-5">
+        <div style="padding-left: 2%;padding-right: 2%">
+            <h4 style="color: white; margin-bottom: 1.5%; margin-top: 0.5%;">Generar Reporte:</h4>
+            <textarea class="form-control" id="entradatxtarea" rows="1" [(ngModel)]="entrada" name="entrada"></textarea>
+        </div>
+
+        <div style="padding-top: 1.5%; padding-left: 2%">
+            <button class="btn btn-outline-success" style="margin-right: 25px;" (click)="ejecutar()">Ejecutar</button>
+            <a href="/inicio" class="btn btn-outline-primary">Return</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="bg-dark p-4 rounded m-5">
+    <div style="padding-left: 2%;padding-right: 2%;padding-bottom: 2%">
+        <h4 style="color: white; margin-bottom: 1.5%; margin-top: 0.5%;">Reporte:</h4>
+        <div id="graph"></div>
+    </div>
+</div>

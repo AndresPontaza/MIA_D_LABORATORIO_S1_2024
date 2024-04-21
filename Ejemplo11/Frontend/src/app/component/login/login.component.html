@@ -1,0 +1,13 @@
+<div class="wrapper">
+  <form class="bg-dark rounded form-signin" #formulario_login="ngForm" (ngSubmit)="formulario_login">
+    <h2 class="form-signin-heading" style="color: white; margin-bottom: 7%;">Bienvenido Usuario: </h2>
+    <input type="text" class="form-control" name="id_particion" placeholder="ID Particion" ngModel />
+    <input type="text" class="form-control" name="user" placeholder="User" ngModel />
+    <input type="password" class="form-control" name="pass" placeholder="Password" ngModel />
+    <div style="padding-top: 1%; padding-left: 1%; margin-top: 7%">
+      <button class="btn btn-outline-success" style="margin-right: 25px;"
+        (click)="ingresar(formulario_login)">Login</button>
+      <a href="/inicio" class="btn btn-outline-primary">Return</a>
+    </div>
+  </form>
+</div>
