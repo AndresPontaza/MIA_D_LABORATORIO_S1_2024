@@ -11,7 +11,7 @@ export class ApiService {
   ) { }
 
   postEntrada(entrada: string) {
-    return this.httpClient.post("http://localhost:5000/analizar", { Cmd: entrada });
+    return this.httpClient.post("http://54.164.50.60:5000/analizar", { Cmd: entrada });
     //return this.httpClient.post("http://XX.XX.XXX.XXX:5000/analizar", { Cmd: entrada });
   }
 }
